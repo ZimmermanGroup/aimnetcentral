@@ -1,52 +1,54 @@
-[tool.poetry]
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
 name = "aimnet"
 version = "0.0.1"
 description = "AIMNet Machine Learned Interatomic Potential"
-authors = ["Roman Zubatyuk <zubatyuk@gmail.com>"]
-repository = "https://github.com/isayevlab/aimnetcentral"
-documentation = "https://isayevlab.github.io/aimnetcentral/"
 readme = "README.md"
-packages = [
-  {include = "aimnet"}
+authors = [
+    {name = "Roman Zubatyuk", email = "zubatyuk@gmail.com"}
+]
+requires-python = ">=3.10,<3.11"
+dependencies = [
+    "torch>=2.4",
+    "pyyaml>=6.0.2",
+    "numpy<2.0",
+    "numba>=0.60.0",
+    "requests>=2.32.3",
+    "click>=8.1.7",
+    "omegaconf>=2.3.0",
+    "wandb>=0.18.5",
+    "jinja2>=3.1.4",
+    "h5py>=3.12.1",
+    "pytorch-ignite>=0.5.1",
+    "ase==3.22.1",
 ]
 
-[tool.poetry.scripts]
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.2.0",
+    "pytest-cov>=4.0.0",
+    "deptry>=0.16.2",
+    "mypy>=1.5.1",
+    "pre-commit>=3.4.0",
+    "tox>=4.11.1",
+]
+docs = [
+    "mkdocs>=1.4.2",
+    "mkdocs-material>=9.2.7",
+    "mkdocstrings[python]>=0.26.1",
+]
+
+[project.urls]
+repository = "https://github.com/isayevlab/aimnetcentral"
+documentation = "https://isayevlab.github.io/aimnetcentral/"
+
+[project.scripts]
 aimnet2pysis = "aimnet.calculators.aimnet2pysis:main"
 aimnet = "aimnet.cli:cli"
 aimnet-clear-models-cache = "aimnet.calculators.model_registry:clear_assets"
-
-[tool.poetry.dependencies]
-python = ">=3.10,<4.0"
-torch = ">=2.4"
-pyyaml = "^6.0.2"
-numpy = "<2.0"
-numba = "^0.60.0"
-requests = "^2.32.3"
-click = "^8.1.7"
-omegaconf = "^2.3.0"
-wandb = "^0.18.5"
-jinja2 = "^3.1.4"
-h5py = "^3.12.1"
-pytorch-ignite = "^0.5.1"
-ase = "3.22.1"
-
-[tool.poetry.group.dev.dependencies]
-pytest = "^7.2.0"
-pytest-cov = "^4.0.0"
-deptry = "^0.16.2"
-mypy = "^1.5.1"
-pre-commit = "^3.4.0"
-tox = "^4.11.1"
-
-[tool.poetry.group.docs.dependencies]
-mkdocs = "^1.4.2"
-mkdocs-material = "^9.2.7"
-mkdocstrings = {extras = ["python"], version = "^0.26.1"}
-
-
-[build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
 
 [tool.mypy]
 files = ["aimnet"]
@@ -107,7 +109,6 @@ lint.ignore = [
     "S101"
 ]
 
-
 [tool.ruff.format]
 preview = true
 
@@ -118,8 +119,16 @@ skip_empty = true
 branch = true
 source = ["aimnet"]
 
-
 [tool.deptry.per_rule_ignores]
 DEP001 = ["ase", "pysisyphus"]
 DEP003 = ["ase", "pysisyphus"]
 DEP004 = ["ase", "pysisyphus"]
+
+[tool.pixi.project]
+channels = ["conda-forge"]
+platforms = ["linux-64"]
+
+[tool.pixi.pypi-dependencies]
+aimnet = { path = "." }
+
+[tool.pixi.tasks]
