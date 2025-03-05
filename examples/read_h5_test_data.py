@@ -27,7 +27,12 @@ def summarize_h5_contents(file_path):
             
             # Start recursive exploration of the file structure
             explore_h5_group(h5_file, level=0)
-            
+
+            # Print a summary of molecule names found
+            print("\nMolecule Names Summary:")
+            print("=" * 80)
+            collect_molecule_names(h5_file)
+
     except Exception as e:
         print(f"Error reading HDF5 file: {e}")
         sys.exit(1)
@@ -42,7 +47,15 @@ def explore_h5_group(group, level=0):
     if level > 0:  # Skip for root group
         print(f"{indent}Group: {group.name}")
         print_attributes(group, level)
-    
+
+        # Check for molecule identifiers in this group
+        if "_id" in group:
+            try:
+                ids = group["_id"][...]
+                print(f"{indent}  Molecule IDs: {ids}")
+            except:
+                print(f"{indent}  Molecule IDs: <Unable to display>")
+
     # Explore all items in the group
     for name, item in group.items():
         if isinstance(item, h5py.Group):
@@ -65,7 +78,54 @@ def explore_h5_group(group, level=0):
             print_attributes(item, level + 1)
             
             print("")  # Empty line for readability
-            
+
+def collect_molecule_names(group, path=""):
+    """
+    Recursively collect molecule names from _id datasets in groups.
+    """
+    molecule_group_count = 0
+
+    # Check if this group has _id dataset
+    if "_id" in group:
+        try:
+            ids = group["_id"][...]
+            if isinstance(ids, np.ndarray):
+                if ids.size > 0:
+                    molecule_group_count += 1
+                    print(f"Group: {group.name}")
+
+                    # Extract molecule names/IDs - handle different formats
+                    if ids.dtype.kind == "S" or ids.dtype.kind == "U":  # String type
+                        # Convert bytes to strings if necessary
+                        if ids.dtype.kind == "S":
+                            names = [id.decode("utf-8", "ignore") for id in ids]
+                        else:
+                            names = ids.tolist()
+
+                        # Display first few and last few if there are many
+                        if len(names) > 10:
+                            print(f"  Molecules ({len(names)} total): {names[:5]} ... {names[-5:]}")
+                        else:
+                            print(f"  Molecules ({len(names)} total): {names}")
+                    else:
+                        # For numeric IDs
+                        if ids.size > 10:
+                            print(f"  Molecule IDs ({ids.size} total): {ids[:5]} ... {ids[-5:]}")
+                        else:
+                            print(f"  Molecule IDs ({ids.size} total): {ids}")
+                    print("")
+        except Exception as e:
+            print(f"  Error reading _id dataset in {group.name}: {e}")
+
+    # Recursively check subgroups
+    for name, item in group.items():
+        if isinstance(item, h5py.Group):
+            subgroup_count = collect_molecule_names(item, path + "/" + name if path else name)
+            molecule_group_count += subgroup_count
+
+    return molecule_group_count
+
+
 def print_attributes(obj, level):
     """
     Print attributes of an HDF5 object.
