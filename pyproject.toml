@@ -132,3 +132,4 @@ platforms = ["linux-64"]
 aimnet = { path = "." }
 
 [tool.pixi.tasks]
+read-h5 = "python examples/read_h5_test_data.py tests/data/dataset.h5"

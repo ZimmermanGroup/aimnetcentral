@@ -117,7 +117,7 @@ packages:
 - pypi: .
   name: aimnet
   version: 0.0.1
-  sha256: 1b9e15ea9986b035bcf0ca73d40507288c9b91bcf5e9fbaf03f2508e0f44ed42
+  sha256: bbdb1db749fa4160451b08d24d6ba43b2bed25604e16af55d78e8734de7ac35a
   requires_dist:
   - torch>=2.4
   - pyyaml>=6.0.2

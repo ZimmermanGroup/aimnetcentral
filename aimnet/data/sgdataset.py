@@ -300,7 +300,7 @@ class SizeGroupedDataset:
                 if k not in keys:
                     for g in other.groups:
                         g.pop(k)
-        for k in other:
+        for k in other.keys():  # noqa: SIM118
             if k in self:
                 self[k].cat(other[k])  # type: ignore[attr-defined]
             else:
