@@ -48,7 +48,6 @@ documentation = "https://isayevlab.github.io/aimnetcentral/"
 [project.scripts]
 aimnet2pysis = "aimnet.calculators.aimnet2pysis:main"
 aimnet = "aimnet.cli:cli"
-aimnet-clear-models-cache = "aimnet.calculators.model_registry:clear_assets"
 
 [tool.mypy]
 files = ["aimnet"]

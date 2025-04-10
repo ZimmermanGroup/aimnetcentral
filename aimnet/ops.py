@@ -28,8 +28,8 @@ def calc_distances(data: Dict[str, Tensor], suffix: str = "", pad_value: float =
             shifts = data[f"shifts{suffix}"] @ data["cell"]
         coord_j = coord_j + shifts
     r_ij = coord_j - coord_i
+    r_ij = nbops.mask_ij_(r_ij, data, mask_value=pad_value, inplace=False, suffix=suffix)
     d_ij = torch.norm(r_ij, p=2, dim=-1)
-    d_ij = nbops.mask_ij_(d_ij, data, mask_value=pad_value, inplace=False, suffix=suffix)
     return d_ij, r_ij
 
 
@@ -70,7 +70,9 @@ def nse(
     epsilon: float = 1.0e-6,
 ) -> Tensor:
     # Q and q_u and f_u must have last dimension size 1 or 2
-    F_u = nbops.mol_sum(f_u, data) + epsilon
+    F_u = nbops.mol_sum(f_u, data)
+    if epsilon > 0:
+        F_u = F_u + epsilon
     Q_u = nbops.mol_sum(q_u, data)
     dQ = Q - Q_u
     # for loss
