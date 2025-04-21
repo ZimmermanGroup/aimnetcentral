@@ -84,7 +84,7 @@ def extract_orca_data(out_file_path, xyz_file_path):
     write_manual_extxyz(xyz_file_path, atoms, forces, charges, Energy)
 
 # === File Handling ===
-directory = "/export/zimmerman/taveewit/CANS/Test/counterions/HNEt3+/qchem/modified_DE_GSM2/reactant213_intermediate213/restart_002/restart2_002over/restart3_002over/foraimnet2_orca"
+directory = "/home/soumikd/aimnetcentral/tests/nui_soumik/ORCA_outputs"
 files_dir = listdir(directory)
 
 files_list = [name for name in files_dir if name.endswith(".out")]
