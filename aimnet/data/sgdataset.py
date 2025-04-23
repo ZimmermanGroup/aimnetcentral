@@ -300,7 +300,7 @@ class SizeGroupedDataset:
                 if k not in keys:
                     for g in other.groups:
                         g.pop(k)
-        for k in other.keys():  # noqa: SIM118
+        for k in other.keys():
             if k in self:
                 self[k].cat(other[k])  # type: ignore[attr-defined]
             else:
@@ -365,17 +365,20 @@ class SizeGroupedDataset:
                 sgroups.append(sg)
                 n = 0
                 sg = []
-        sgroups[-1].extend(sg)
+        try:
+            sgroups[-1].extend(sg)
+        except IndexError:
+            sgroups.extend(sg)
 
         # merge
         keys = self.datakeys()
-        for sg in sgroups:
-            for k in keys:
-                arrs = [self[n][k] for n in sg]  # type: ignore
-                arrs = self._collate(arrs)
-                self[sg[-1]]._data[k] = arrs  # type: ignore
-            for n in sg[:-1]:
-                del self._data[n]
+        # for sg in sgroups:
+        for k in keys:
+            arrs = [self[n][k] for n in sg]  # type: ignore
+            arrs = self._collate(arrs)
+            self[sg[-1]]._data[k] = arrs  # type: ignore
+        for n in sg[:-1]:
+            del self._data[n]
 
     @staticmethod
     def _collate(arrs, pad_value=0):
