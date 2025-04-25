@@ -41,11 +41,11 @@ def read_trj(fname):
             charges.append(tq)
 
     return (
-        np.array(coords),
-        np.array(numbers),
-        np.array(forces),
-        np.array(charges),
-        np.array(energies),
+        np.array(coords, dtype='float32'),
+        np.array(numbers, dtype='int32'),
+        np.array(forces, dtype='float32'),
+        np.array(charges, dtype='float32'),
+        np.array(energies, dtype='float64'),
     )
 
 
@@ -55,7 +55,7 @@ if __name__ == '__main__':
 
     for xyz in xyzs:
         coord, numbers, forces, charges, energies = read_trj(prefix + xyz)
-        charge = np.zeros(len(coord))  # net charge for each molecule
+        charge = np.zeros(len(coord), dtype='int8')  # net charge for each molecule
 
         d = dict(
             coord=coord,
