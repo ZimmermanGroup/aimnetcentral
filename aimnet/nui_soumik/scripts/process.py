@@ -42,7 +42,7 @@ def read_trj(fname):
 
     return (
         np.array(coords, dtype='float32'),
-        np.array(numbers, dtype='int32'),
+        np.array(numbers, dtype='int8'),
         np.array(forces, dtype='float32'),
         np.array(charges, dtype='float32'),
         np.array(energies, dtype='float64'),
